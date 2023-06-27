@@ -1,8 +1,8 @@
 const express = require('express');
-const data = require('./user.json');
+const data = require('./src/data/user.json');
 const bodyParser = require('body-parser');
 const app = express();
-const port = 3009;
+const port = 3000;
 
 
 // parse application/x-www-form-urlencoded
@@ -23,10 +23,10 @@ app.get('/getUser', (req,res)=>{
 // get based on  id 
 app.get('/getUser/:id', function(req, res){
     let user = data.find((u) => u.id === parseInt(req.params.id));
-    res.send(user);
     if (!user){
         res.send("No user with that id"); 
     }
+    res.send(user);
 })
 
 //post method
@@ -73,6 +73,8 @@ app.put('/putUser/:id', (req, res) => {
     res.send(data);
  });
 
-app.listen(port, ()=>{
+var server = app.listen(port, ()=>{
     console.log("Listening on 3009");
 })
+
+module.exports = server

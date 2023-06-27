@@ -1,6 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
+const db = require('./src/config/db')
 const bodyParser = require('body-parser');
 dotenv.config();
 
@@ -12,17 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-const db = mysql.createConnection({
-    // host: process.env.MYSQL_HOST,
-    // user: process.env.MYSQL_USER,
-    // password: process.env.MYSQL_PASSWORD,
-    // database: process.env.MYSQL_DATABASE, 
-    host: 'localhost',
-    user: 'dhiksha',
-    password: 'Helloworld@123',
-    database: 'task3UserTable', 
-
- });
+ 
 
 db.connect((err) => {
     if(err){
@@ -118,6 +109,8 @@ app.get('/',(req,res)=>{
     res.send("CRUD with mysql");
 })
 
-app.listen('3010',()=>{
+var server = app.listen('3010',()=>{
     console.log("connected on 3010");
 })
+
+module.exports = server;
