@@ -1,7 +1,7 @@
 const { log } = require('console');
 const http = require('http');
 const data = require('./data.json');
- const port = process.env.PORT || 3008;
+const port = 3008;
 
  http.createServer((req,res)=>{
 

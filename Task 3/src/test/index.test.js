@@ -21,7 +21,7 @@ describe("testing the response of API",()=>{
         const response = await request(app).get('/users/97');
         expect(response.status).toBe(200);
         expect(response.text).toBe('User fetched based on id');
-       });   
+    });   
 })
 
  

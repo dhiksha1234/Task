@@ -3,12 +3,12 @@ const mysql = require('mysql2');
 const dotenv = require('dotenv');
 const db = require('./src/config/db')
 const bodyParser = require('body-parser');
+const port = 3004;
 dotenv.config();
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }))
-
 app.use(bodyParser.json())
 
  
@@ -30,13 +30,20 @@ app.get('/createdb',(req,res)=>{
     })
 });
 
+app.get('/firstName',(req,res) =>{
+    db.query("Select firstName from users", (err,result)=>{
+        if(err) throw err;
+        res.send(result);
+    })
+})
+
 //create table
 app.get('/createUser',(req,res)=>{
-    let sql = `CREATE TABLE users(id int AUTO_INCREMENT, firstName VARCHAR(30) UNIQUE, lastName VARCHAR(30), mobileNumber VARCHAR(10), gender VARCHAR(1), email VARCHAR(255) UNIQUE,country VARCHAR(50), PRIMARY KEY(id))`;
+    let sql = `CREATE TABLE users(id int AUTO_INCREMENT, firstName VARCHAR(30) UNIQUE, lastName VARCHAR(30), mobileNumber VARCHAR(255), gender VARCHAR(10), email VARCHAR(255) UNIQUE,country VARCHAR(50), PRIMARY KEY(id))`;
     db.query(sql, (err,result)=>{
         if(err) throw err;
         console.log(result);
-        res.send("Table created");
+        res.send(result);
     })
 });
 
@@ -66,17 +73,18 @@ app.get('/users',(req,res)=>{
      db.query(sql, (err,result)=>{
         if(err) throw err;
         console.log(result);
-        res.send("User fetched");
+        res.send(result);
     })
 });
 
 //get the user table based on id
 app.get('/users/:id',(req,res)=>{
-    let sql = `SELECT * FROM users WHERE id = ${req.params.id}`
+    const paramsId = parseInt(req.params.id);
+    let sql = `SELECT * FROM users WHERE id = ${paramsId}`
      db.query(sql, (err,result)=>{
         if(err) throw err;
         console.log(result);
-        res.send("User fetched based on id");
+        res.send(result);
     })
 });
 
@@ -84,7 +92,8 @@ app.get('/users/:id',(req,res)=>{
 app.put('/userUpdate/:id',(req,res)=>{
     let newEmail = req.body.email;
     let newMobile = req.body.mobileNumber;
-    let sql = `UPDATE users SET email = '${newEmail}' ,mobileNumber = ${newMobile}  WHERE id = ${req.params.id}`
+    const paramsId = parseInt(req.params.id);
+    let sql = `UPDATE users SET email = '${newEmail}' ,mobileNumber = '${newMobile}'  WHERE id = ${paramsId}`
      db.query(sql, (err,result)=>{
         if(err) throw err;
         console.log(result);
@@ -93,8 +102,10 @@ app.put('/userUpdate/:id',(req,res)=>{
 });
 
 //delete user
-app.get('/userDelete/:id',(req,res)=>{
-     let sql = `DELETE FROM users WHERE id = ${req.params.id}`
+app.delete('/userDelete/:id',(req,res)=>{
+    console.log("inside delete");
+    const paramsId = parseInt(req.params.id);
+     let sql = `DELETE FROM users WHERE id = ${paramsId}`
      db.query(sql, (err,result)=>{
         if(err) throw err;
         console.log(result);
@@ -107,8 +118,8 @@ app.get('/',(req,res)=>{
     res.send("CRUD with mysql");
 })
 
-var server = app.listen('3010',()=>{
-    console.log("connected on 3010");
+var server = app.listen(port,()=>{
+    console.log(`connected on ${port}`);
 })
 
 module.exports = server;
